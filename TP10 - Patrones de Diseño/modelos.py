@@ -1,30 +1,58 @@
 # =============================================
 # TP10 - Patrones de Diseño (Strategy + Chain of Responsibility)
-# Modelo de dominio de la tienda online
+# Clases del dominio de la tienda online
 # =============================================
 
 
 def formato_dinero(monto):
-    """Formatea un monto como $100.000 (separador de miles con punto)."""
+    """Muestra un monto como $100.000"""
     return "$" + f"{monto:,.0f}".replace(",", ".")
 
 
 class Producto:
-    def __init__(self, nombre, precio_unitario):
+    def __init__(self, nombre, precio, stock):
         self.__nombre = nombre
-        self.__precio_unitario = precio_unitario
+        self.__precio = precio
+        self.__stock = stock
 
     def get_nombre(self):
         return self.__nombre
 
-    def get_precio_unitario(self):
-        return self.__precio_unitario
+    def get_precio(self):
+        return self.__precio
+
+    def get_stock(self):
+        return self.__stock
 
 
-class ItemCompra:
-    def __init__(self, producto, cantidad):
+class Cliente:
+    def __init__(self, nombre, saldo, activo=True):
+        self.__nombre = nombre
+        self.__saldo = saldo
+        self.__activo = activo
+
+    def get_nombre(self):
+        return self.__nombre
+
+    def get_saldo(self):
+        return self.__saldo
+
+    def esta_activo(self):
+        return self.__activo
+
+
+class Compra:
+    """Una compra puede tener varias estrategias de precio (Strategy)."""
+
+    def __init__(self, cliente, producto, cantidad):
+        self.__cliente = cliente
         self.__producto = producto
         self.__cantidad = cantidad
+        self.__estrategias = []
+        self.__precio_final = 0
+
+    def get_cliente(self):
+        return self.__cliente
 
     def get_producto(self):
         return self.__producto
@@ -32,94 +60,23 @@ class ItemCompra:
     def get_cantidad(self):
         return self.__cantidad
 
-    def get_subtotal(self):
-        return self.__producto.get_precio_unitario() * self.__cantidad
-
-
-class MedioPago:
-    def __init__(self, tipo, fondos_disponibles):
-        self.__tipo = tipo
-        self.__fondos_disponibles = fondos_disponibles
-
-    def get_tipo(self):
-        return self.__tipo
-
-    def get_fondos_disponibles(self):
-        return self.__fondos_disponibles
-
-
-class Cliente:
-    def __init__(self, nombre, medio_pago, activo=True):
-        self.__nombre = nombre
-        self.__medio_pago = medio_pago
-        self.__activo = activo
-
-    def get_nombre(self):
-        return self.__nombre
-
-    def get_medio_pago(self):
-        return self.__medio_pago
-
-    def esta_activo(self):
-        return self.__activo
-
-
-class Inventario:
-    def __init__(self, stock_por_producto):
-        # {nombre_producto: unidades disponibles}
-        self.__stock = dict(stock_por_producto)
-
-    def get_stock(self, producto):
-        return self.__stock.get(producto.get_nombre(), 0)
-
-
-class Compra:
-    """Compra a la que se le pueden acoplar varias estrategias de precio."""
-
-    def __init__(self, cliente, items):
-        self.__cliente = cliente
-        self.__items = list(items)
-        self.__estrategias = []
-
-    def get_cliente(self):
-        return self.__cliente
-
-    def get_items(self):
-        return list(self.__items)
-
-    def get_estrategias(self):
-        return list(self.__estrategias)
-
-    def agregar_estrategia(self, estrategia):
-        self.__estrategias.append(estrategia)
-        return self
-
-    def get_cantidad_productos(self):
-        return sum(item.get_cantidad() for item in self.__items)
-
     def get_precio_inicial(self):
-        return sum(item.get_subtotal() for item in self.__items)
-
-
-class Pedido:
-    """Compra ya calculada, lista para pasar por la cadena de validaciones."""
-
-    def __init__(self, compra, precio_final, inventario):
-        self.__compra = compra
-        self.__precio_final = precio_final
-        self.__inventario = inventario
-
-    def get_compra(self):
-        return self.__compra
-
-    def get_cliente(self):
-        return self.__compra.get_cliente()
-
-    def get_items(self):
-        return self.__compra.get_items()
+        return self.__producto.get_precio() * self.__cantidad
 
     def get_precio_final(self):
         return self.__precio_final
 
-    def get_inventario(self):
-        return self.__inventario
+    def agregar_estrategia(self, estrategia):
+        self.__estrategias.append(estrategia)
+
+    def calcular_precio_final(self):
+        precio = self.get_precio_inicial()
+        print(f"  Compra inicial: {formato_dinero(precio)}")
+
+        # Polimorfismo: cada estrategia sabe cómo modificar el precio
+        for estrategia in self.__estrategias:
+            precio = estrategia.aplicar(precio)
+            print(f"  {estrategia.get_descripcion()} -> {formato_dinero(precio)}")
+
+        self.__precio_final = precio
+        print(f"  PRECIO FINAL: {formato_dinero(precio)}")

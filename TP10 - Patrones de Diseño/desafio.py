@@ -1,19 +1,18 @@
 # =============================================
 # TP10 - DESAFÍO
-# Se agregan DescuentoBlackFriday y ValidarLimiteCompra SIN modificar
-# ninguna estrategia ni validador existente (estrategias.py y cadena.py
-# quedan intactos: solo se importan y se extienden).
+# Se agregan DescuentoBlackFriday y ValidarLimiteCompra sin modificar
+# las clases que ya existían: solo se heredan.
 # Ejecutar con: python desafio.py
 # =============================================
 
-from modelos import Producto, ItemCompra, MedioPago, Cliente, Inventario, Compra, Pedido, formato_dinero
-from estrategias import DescuentoPorcentual, CalculadoraPrecio, ClienteVIP, EnvioNormal
-from cadena import Validador, armar_cadena, ValidarCliente, ValidarStock, ValidarPago
+from modelos import Producto, Cliente, Compra
+from estrategias import Descuento, ClienteVIP, EnvioNormal
+from cadena import Validador, ValidarCliente, ValidarStock, ValidarPago
 
 
-class DescuentoBlackFriday(DescuentoPorcentual):
-    def __init__(self, porcentaje=30):
-        super().__init__("Descuento Black Friday", porcentaje)
+class DescuentoBlackFriday(Descuento):
+    def __init__(self):
+        super().__init__("Descuento Black Friday", 30)
 
 
 class ValidarLimiteCompra(Validador):
@@ -24,50 +23,40 @@ class ValidarLimiteCompra(Validador):
     def get_nombre(self):
         return "Validar Límite de Compra"
 
-    def validar(self, pedido):
-        if pedido.get_precio_final() > self._limite:
-            return False, (f"El total {formato_dinero(pedido.get_precio_final())} supera "
-                           f"el límite de compra de {formato_dinero(self._limite)}")
-        return True, ""
+    def es_valido(self, compra):
+        return compra.get_precio_final() <= self._limite
 
 
-def procesar(titulo, compra, inventario, limite):
-    print("=" * 60)
+def procesar(titulo, compra):
+    print("=" * 50)
     print(titulo)
-    print("=" * 60)
-
+    print("=" * 50)
     print("[Strategy]")
-    precio = CalculadoraPrecio().calcular(compra)
-    precio.mostrar()
-
-    print(f"[Chain of Responsibility] (límite de compra: {formato_dinero(limite)})")
-    pedido = Pedido(compra, precio.precio_final, inventario)
-    # Se inserta el nuevo eslabón en la composición de la cadena, sin tocar los otros.
-    cadena = armar_cadena(ValidarCliente(), ValidarLimiteCompra(limite),
-                          ValidarStock(), ValidarPago())
-    cadena.procesar(pedido).mostrar()
+    compra.calcular_precio_final()
+    print("[Chain of Responsibility] (límite: $500.000)")
+    cadena = ValidarCliente()
+    cadena.set_siguiente(ValidarLimiteCompra(500000)) \
+          .set_siguiente(ValidarStock()) \
+          .set_siguiente(ValidarPago())
+    cadena.procesar(compra)
     print()
 
 
 def main():
-    tv = Producto("Smart TV", 400000)
-    inventario = Inventario({"Smart TV": 10})
-    cliente = Cliente("Lucía Fernández", MedioPago("Tarjeta de crédito", 2000000))
+    tv = Producto("Smart TV", 400000, stock=10)
+    lucia = Cliente("Lucía Fernández", saldo=2000000)
 
-    # Black Friday con un total dentro del límite -> aprobado
-    compra_ok = (Compra(cliente, [ItemCompra(tv, 1)])
-                 .agregar_estrategia(ClienteVIP())
-                 .agregar_estrategia(DescuentoBlackFriday(30))
-                 .agregar_estrategia(EnvioNormal()))
-    procesar("DESAFÍO 1: Black Friday dentro del límite", compra_ok, inventario, 500000)
+    compra1 = Compra(lucia, tv, 1)
+    compra1.agregar_estrategia(ClienteVIP())
+    compra1.agregar_estrategia(DescuentoBlackFriday())
+    compra1.agregar_estrategia(EnvioNormal())
+    procesar("DESAFÍO 1: Black Friday dentro del límite", compra1)
 
-    # Total por encima del límite -> rechazado por el nuevo validador
-    # (Validar Stock y Validar Pago no llegan a ejecutarse)
-    compra_limite = (Compra(cliente, [ItemCompra(tv, 3)])
-                     .agregar_estrategia(ClienteVIP())
-                     .agregar_estrategia(DescuentoBlackFriday(30))
-                     .agregar_estrategia(EnvioNormal()))
-    procesar("DESAFÍO 2: Rechazado por límite de compra", compra_limite, inventario, 500000)
+    compra2 = Compra(lucia, tv, 3)
+    compra2.agregar_estrategia(ClienteVIP())
+    compra2.agregar_estrategia(DescuentoBlackFriday())
+    compra2.agregar_estrategia(EnvioNormal())
+    procesar("DESAFÍO 2: Rechazado por superar el límite", compra2)
 
 
 if __name__ == "__main__":
