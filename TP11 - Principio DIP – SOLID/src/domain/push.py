@@ -4,7 +4,7 @@ PARTE 3 - Extensión: nuevo canal de notificaciones push.
 Solo se agrega una clase nueva que implementa Mensajeria.
 NotificacionService no se modifica.
 """
-from mensajeria import Mensajeria
+from domain.mensajeria import Mensajeria
 
 
 class Push(Mensajeria):

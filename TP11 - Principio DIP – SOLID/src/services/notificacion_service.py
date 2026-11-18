@@ -7,7 +7,7 @@ PARTE 2 - NotificacionService depende de la abstracción Mensajeria.
 
 Esta clase NO se modifica en la Parte 3.
 """
-from mensajeria import Mensajeria
+from domain.mensajeria import Mensajeria
 
 
 class NotificacionService:
