@@ -4,23 +4,25 @@
 
 ```
 backend/                     → puerto 3001
-└── src/
-    ├── domain/              → entidades (clases)
-    ├── dao/                 → acceso a datos (en memoria, simula la BD)
-    ├── services/            → lógica de negocio y validaciones
-    ├── controllers/         → reciben el request y arman la respuesta HTTP
-    ├── routes/              → definen los endpoints
-    ├── app.js               → configura Express y registra las rutas
-    └── index.js             → levanta el servidor
+├── src/
+│   ├── domain/              → entidades (clases)
+│   ├── dao/                 → acceso a datos (en memoria, simula la BD)
+│   ├── services/            → lógica de negocio y validaciones
+│   ├── controllers/         → reciben el request y arman la respuesta HTTP
+│   ├── routes/              → definen los endpoints
+│   ├── app.js               → configura Express y registra las rutas
+│   └── index.js             → levanta el servidor
+└── test/                    → tests (misma estructura que src/)
 
 frontend/                    → puerto 3000
-└── src/
-    ├── models/              → estructura/valores por defecto de cada entidad
-    ├── services/            → llamadas HTTP al backend (fetch)
-    ├── controllers/         → hooks de React con el estado y las acciones
-    ├── components/          → vistas (Header, Footer, ItemsView)
-    ├── App.jsx              → tabs y navegación
-    └── index.jsx            → punto de entrada
+├── src/
+│   ├── models/              → estructura/valores por defecto de cada entidad
+│   ├── services/            → llamadas HTTP al backend (fetch)
+│   ├── controllers/         → hooks de React con el estado y las acciones
+│   ├── components/          → vistas (Header, Footer, ItemsView)
+│   ├── App.jsx              → tabs y navegación
+│   └── index.jsx            → punto de entrada
+└── test/                    → tests (misma estructura que src/)
 ```
 
 Flujo de una petición: `route → controller → service → dao → domain`.

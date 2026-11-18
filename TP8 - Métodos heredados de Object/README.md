@@ -6,9 +6,20 @@ Trabajo práctico sobre los métodos especiales (dunder methods) que toda clase 
 
 Comprender el comportamiento por defecto de los métodos heredados de `object` (`__str__`, `__repr__`, `__eq__`, `__hash__`, etc.) y observar cómo cambia al sobrescribirlos en una clase `Persona`.
 
-## Archivos
+## Estructura
 
-- `tp8_metodos_object.py`: script principal con dos partes y una sección de preguntas y respuestas.
+```
+├── src/
+│   ├── controllers/
+│   ├── domain/
+│   │   └── tp8_metodos_object.py   # Clase Persona: dos partes + preguntas y respuestas
+│   ├── routes/
+│   ├── services/
+│   └── dao/
+├── test/                           # Tests (misma estructura que src/)
+├── requirements.txt                # Dependencias (ninguna externa)
+└── README.md
+```
 
 ## Contenido
 
@@ -41,7 +52,7 @@ Incluye respuestas a preguntas conceptuales sobre:
 ## Cómo ejecutar
 
 ```bash
-python tp8_metodos_object.py
+python src/domain/tp8_metodos_object.py
 ```
 
-Requiere Python 3.x. No usa dependencias externas.
+Desde esta carpeta. Requiere Python 3.x. No usa dependencias externas.

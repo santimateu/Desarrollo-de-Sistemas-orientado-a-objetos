@@ -1,0 +1,6 @@
+# Dependencias del proyecto TP8 - Métodos heredados de Object
+# Requiere Python 3.8 o superior.
+#
+# El proyecto solo usa la biblioteca estándar de Python,
+# por lo que no hay paquetes externos que instalar.
+# Para instalar: pip install -r requirements.txt

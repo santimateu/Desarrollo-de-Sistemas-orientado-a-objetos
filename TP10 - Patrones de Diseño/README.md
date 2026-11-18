@@ -2,17 +2,27 @@
 
 Tienda online que calcula el precio final de una compra (**Strategy**) y después valida el pedido con una cadena de controles (**Chain of Responsibility**).
 
-## Archivos
+## Estructura
 
-| Archivo | Contenido |
-|---|---|
-| `modelos.py` | `Producto`, `Cliente` y `Compra`. |
-| `estrategias.py` | **Parte 1**: clase abstracta `EstrategiaPrecio`, `Descuento`, `Envio` y sus subclases. |
-| `cadena.py` | **Parte 2**: clase abstracta `Validador` y `ValidarCliente`, `ValidarStock`, `ValidarPago`. |
-| `main.py` | Tres escenarios: aprobado, rechazado por stock y rechazado por pago. |
-| `desafio.py` | `DescuentoBlackFriday` y `ValidarLimiteCompra`. |
+```
+├── src/
+│   ├── controllers/
+│   ├── domain/
+│   │   └── modelos.py        # Producto, Cliente y Compra
+│   ├── routes/
+│   ├── services/
+│   │   ├── estrategias.py    # Parte 1: Strategy (EstrategiaPrecio, Descuento, Envio...)
+│   │   └── cadena.py         # Parte 2: Chain of Responsibility (Validador...)
+│   ├── dao/
+│   ├── main.py               # Tres escenarios: aprobado, rechazado por stock y por pago
+│   └── desafio.py            # DescuentoBlackFriday y ValidarLimiteCompra
+├── test/                     # Tests (misma estructura que src/)
+├── preguntas.md
+├── requirements.txt          # Dependencias (ninguna externa)
+└── README.md
+```
 
-Para ejecutarlo (desde esta carpeta): `python main.py` y `python desafio.py`.
+Para ejecutarlo (desde esta carpeta): `python src/main.py` y `python src/desafio.py`.
 
 ## Conceptos de POO aplicados
 

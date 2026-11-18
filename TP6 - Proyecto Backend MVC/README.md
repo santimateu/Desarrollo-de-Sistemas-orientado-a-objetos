@@ -19,7 +19,10 @@ src/
 ├── dao/
 ├── app.js
 └── index.js
+test/            → tests (misma estructura que src/)
 ```
+
+El `frontend/` sigue la misma idea con `src/{models,services,controllers,components}` y su carpeta `test/`.
 
 ---
 
